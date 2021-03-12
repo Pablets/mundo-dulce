@@ -1,46 +1,48 @@
 {
-  "name": "mundo-dulce",
+  "name": "proshop",
   "version": "1.0.0",
-  "description": "Bakery store located at Capital Federal, local bussiness.",
+  "description": "MERN shopping cart app",
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "client": "npm start --prefix frontend",
+    "start": "nodemon ./backend/server.js",
     "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "test": "jest --config ./jest.config.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Pablets/mundo-dulce.git"
+    "data:import": "node backend/seeder",
+    "data:destroy": "node backend/seeder -d",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
+    "test": "jest --config ./jest.config.json",
+    "test:watch": "npm run test -- --watch"
   },
   "keywords": [
-    "Bakery",
-    "dulces",
-    "cupcakes"
+    "e-commerce"
   ],
   "author": "Pablo Godoy",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Pablets/mundo-dulce/issues"
-  },
-  "homepage": "https://github.com/Pablets/mundo-dulce#readme",
   "dependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/preset-env": "^7.12.16",
-    "@craco/craco": "^6.1.1",
-    "axios": "^0.21.1",
-    "babel-jest": "^26.6.3",
+    "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
-    "concurrently": "^5.3.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "mercadopago": "^1.5.3",
+    "mongoose": "^5.11.12",
     "morgan": "^1.10.0",
+    "multer": "^1.4.2",
     "nodemon": "^2.0.7",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
-    "regenerator-runtime": "^0.13.7"
+    "react-responsive": "^8.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pablets/mern-ecommerce-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pablets/mern-ecommerce-app/issues"
+  },
+  "homepage": "https://github.com/Pablets/mern-ecommerce-app#readme"
 }

@@ -17,7 +17,7 @@ const products = [
     name: 'iPhone 11 Pro 256GB Memory',
     image: '/images/phone.jpg',
     featuredImage: '',
-    featuredImageMobile: '',
+    featuredImageMobile: '/images/banner-phone-mobile.jpg',
     description:
       'Introducing the iPhone 11 Pro. A transformative triple-camera system that adds tons of capability without complexity. An unprecedented leap in battery life',
     brand: 'Apple',
@@ -44,7 +44,7 @@ const products = [
   {
     name: 'Sony Playstation 4 Pro White Version',
     image: '/images/playstation.jpg',
-    featuredImage: '',
+    featuredImage: '/images/banner-playstation.jpg',
     featuredImageMobile: '',
     description:
       'The ultimate home entertainment center starts with PlayStation. Whether you are into gaming, HD movies, television, music',
@@ -83,12 +83,6 @@ const products = [
     rating: 4,
     numReviews: 12,
   },
-]
+];
 
-// mocking _ID
-
-products.map((product, i) => {
-  product._id = `${i}`
-})
-
-export default products 
+export default products;
