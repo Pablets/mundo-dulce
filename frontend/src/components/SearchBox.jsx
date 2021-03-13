@@ -1,38 +1,37 @@
-import React, { useState } from 'react';
-import { Form, Button, InputGroup, FormControl } from 'react-bootstrap';
+import React, { useState } from 'react'
 
 const SearchBox = ({ history }) => {
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState('')
 
   const submitHandler = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (keyword.trim()) {
-      history.push(`/search/${keyword}`);
+      history.push(`/search/${keyword}`)
     } else {
-      history.push('/');
+      history.push('/')
     }
-  };
+  }
 
   return (
-    <Form onSubmit={submitHandler}  className='lg-py-0 xl-py-0 py-0 mt-3'>
-      <InputGroup className="mb-3">
-        <FormControl
-          placeholder="Buscar..."
-          aria-label="Search"
-          aria-describedby="Search"
-          onChange={(e) => setKeyword(e.target.value)}
-        />
-        <InputGroup.Append>
-          <InputGroup.Text className='p-0 m-0'>
-            <Button type="submit" className={'small'}>
-              <h6 className='d-none d-sm-none d-lg-visible-inline-block d-xl-inline-block text-light m-xl-0'>Buscar</h6>
-              <i className='fas fa-search p-0 m-xs-n2 ml-xl-2 '></i>
-            </Button>
-          </InputGroup.Text>
-        </InputGroup.Append>
-      </InputGroup>
-    </Form>
-  );
-};
+    <form
+      onSubmit={submitHandler}
+      className='rounded-full bg-gray-50 flex flex-row justify-between'
+    >
+      <input
+        className='bg-transparent px-3 text-1xl text-gray-800 focus:outline-none'
+        placeholder='Buscar...'
+        aria-label='Search'
+        aria-describedby='Search'
+        onChange={(e) => setKeyword(e.target.value)}
+      />
+      <button
+        type='submit'
+        className='rounded-full bg-transparent py-0 pr-3 focus:outline-none'
+      >
+        <i className='fas fa-search text-gray-500 hover:text-gray-800 bg-transparent text-2xl m-0 p-0'></i>
+      </button>
+    </form>
+  )
+}
 
-export default SearchBox;
+export default SearchBox
