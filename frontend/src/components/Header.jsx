@@ -8,6 +8,8 @@ import SearchBox from './SearchBox'
 import { logout } from '../actions/userActions'
 // import Dropdown from 'react-overlays/Dropdown';
 import useRootClose from 'react-overlays/useRootClose'
+import Dropdown from './Dropdown'
+import { motion } from 'framer-motion'
 
 const Header = () => {
   const dispatch = useDispatch()
@@ -16,7 +18,7 @@ const Header = () => {
     query: '(min-device-width: 1224px)',
   })
 
-  const [dropDown, setDropDown] = useState(false)
+  // const [dropDown, setDropDown] = useState(false)
 
   const ref = useRef()
   const [show, setShow] = useState(false)
@@ -26,7 +28,7 @@ const Header = () => {
     disabled: !show,
   })
 
-  const userLogin = useSelector((state) => state.userLogin)
+  const userLogin = useSelector(state => state.userLogin)
 
   const { userInfo } = userLogin
 
@@ -35,117 +37,116 @@ const Header = () => {
     setShow(false)
   }
 
-  const handleDropDown = (event) => {
-    console.log(event.target.id)
-  }
-
   return (
     <>
       {!isDesktop ? (
-        <header style={{ marginTop: '69px' }}>
+        <header style={{ marginTop: '58px' }}>
           <div
-            className='d-flex align-items-center py-3 acenter fixed-top bg-yellow-600'
-            expand='lg'
-          >
-            <div>
-              <NavLink
-                to='/'
-                className='text-gray-100'
-                activeClassName='text-white'
-              >
-                Mundo Dulce
-              </NavLink>
+            className='d-flex fixed top-0 w-screen bg-yellow-600 overflow-visible z-50'
+            expand='lg'>
+            <div className='mx-0 d-flex'>
+              <div className='mx-0 d-flex justify-content-between items-center w-screen px-2 py-2 overflow-visible'>
+                <NavLink
+                  to='/'
+                  className='text-gray-100 d-flex text-decoration-none w-12 justify-self-left'
+                  activeClassName='text-white'>
+                  Mundo Dulce
+                </NavLink>
+                <div className='mr-20 pl-2'>
+                  <SearchBox />
+                </div>
+              </div>
               <button
-                className='text-black bg-red-400 active: border-transparent'
-                onClick={() => setShow(true)}
-              >
+                className='absolute text-black bg-red-400 active: border-transparent focus:outline-none p-2 top-2 right-2 h-10 w-14'
+                onClick={() => setShow(true)}>
                 Menu
               </button>
-              <div className='xs-px-0 xs-mx-0' id='basic-navbar-nav'>
-                {show && (
-                  <div
-                    className='p-relative'
-                    style={{ height: '100vh', background: 'rgba(0,0,0,.0)' }}
-                  >
-                    <div ref={ref}>
-                      <div className='w-100 px-0 px-md-2 px-lg-2 p-absolute background-transparent'>
-                        <Route
-                          render={({ history }) => (
-                            <SearchBox history={history} />
-                          )}
-                        />
-                      </div>
-                      <div>
-                        <NavLink to='/cart' onClick={() => setShow(false)}>
-                          <i className='fas fa-shopping-cart' />
+              <motion.div
+                animate={show ? { x: -360 } : { x: -649 }}
+                transition={{ duration: 0.5 }}>
+                <div
+                  ref={ref}
+                  className='bg-yellow-600 h-screen z-50 absolute w-72 pt-4 pl-2'>
+                  <div>
+                    <div className='pb-2'>
+                      <NavLink
+                        to='/cart'
+                        onClick={() => setShow(false)}
+                        activeClassName='text-decoration-none'>
+                        <i className='fas fa-shopping-cart ml-1 text-base text-gray-700' />
+                        <span className='ml-2 text-xl font-normal text-gray-700'>
                           Carrito
-                        </NavLink>
-                        <div>
-                          {userInfo ? (
-                            <div>
-                              <div className='flex flex-row'>
-                                <i className='fas fa-user'></i>
-                                <button
-                                  id='userdropdown'
-                                  // onClick={()=>setDropDown(!dropDown)}
-                                  onClick={()=>handleDropDown(!dropDown)}
-                                >
-                                  {userInfo.name && userInfo.name}
-                                </button>
-                              </div>
-                              {dropDown && (
-                                <div title={userInfo.name} id='username'>
-                                  <NavLink
-                                    to='/profile'
-                                    onClick={() => setShow(false)}
-                                  >
-                                    <button>
-                                      <h1>Perfil</h1>
-                                    </button>
-                                  </NavLink>
-                                  <div>
-                                    <button onClick={logoutHandler}>
-                                      <h1>Salir</h1>
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <NavLink to='/login' onClick={() => setShow(false)}>
-                              <h5>Ingresar</h5>
-                            </NavLink>
-                          )}
-                        </div>
-                        {userInfo && userInfo.isAdmin && (
-                          <option title='Admin' id='adminmenu'>
-                            <div>
-                              <NavLink
-                                to='/admin/userlist'
-                                onClick={() => setShow(false)}
-                              >
-                                <h1>Users</h1>
-                              </NavLink>
-                            </div>
-                            <NavLink
-                              to='/admin/productlist'
-                              onClick={() => setShow(false)}
-                            >
-                              <h1>Productos</h1>
-                            </NavLink>
-                            <NavLink
-                              to='/admin/orderlist'
-                              onClick={() => setShow(false)}
-                            >
-                              <h1>Ordenes</h1>
-                            </NavLink>
-                          </option>
-                        )}
-                      </div>
+                        </span>
+                      </NavLink>
                     </div>
+                    <div>
+                      {userInfo ? (
+                        <div>
+                          <Dropdown icon={'fas fa-user'} label={userInfo.name}>
+                            <NavLink
+                              to='/profile'
+                              onClick={() => setShow(false)}>
+                              <button className='ml-7'>
+                                <span className='font-sans font-normal text-base'>
+                                  Perfil
+                                </span>
+                              </button>
+                            </NavLink>
+                            <div>
+                              <button className='ml-7' onClick={logoutHandler}>
+                                <span className='font-sans font-normal text-base'>
+                                  Salir
+                                </span>
+                              </button>
+                            </div>
+                          </Dropdown>
+                        </div>
+                      ) : (
+                        <NavLink to='/login' onClick={() => setShow(false)}>
+                          <h5>Ingresar</h5>
+                        </NavLink>
+                      )}
+                    </div>
+                    {userInfo && userInfo.isAdmin && (
+                      <Dropdown icon={'fas fa-lock'} label={'Admin'}>
+                        <div>
+                          <NavLink
+                            to='/admin/userlist'
+                            onClick={() => setShow(false)}>
+                            <button className='ml-7'>
+                              <span className='font-sans font-normal text-base'>
+                                Users
+                              </span>
+                            </button>
+                          </NavLink>
+                        </div>
+                        <div>
+                          <NavLink
+                            to='/admin/productlist'
+                            onClick={() => setShow(false)}>
+                            <button className='ml-7'>
+                              <span className='font-sans font-normal text-base'>
+                                Productos
+                              </span>
+                            </button>
+                          </NavLink>
+                        </div>
+                        <div>
+                          <NavLink
+                            to='/admin/orderlist'
+                            onClick={() => setShow(false)}>
+                            <button className='ml-7'>
+                              <span className='font-sans font-normal text-base'>
+                                Ordenes
+                              </span>
+                            </button>
+                          </NavLink>
+                        </div>
+                      </Dropdown>
+                    )}
                   </div>
-                )}
-              </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </header>
@@ -156,8 +157,7 @@ const Header = () => {
             bg='dark'
             variant='dark'
             expand='lg'
-            collapseOnSelect
-          >
+            collapseOnSelect>
             <Container>
               <LinkContainer to='/'>
                 <Navbar.Brand href='/'>Mundo Dulce</Navbar.Brand>
@@ -165,8 +165,7 @@ const Header = () => {
               <Navbar.Toggle aria-controls='basic-navbar-nav' />
               <Navbar.Collapse
                 className='xs-px-0 xs-mx-0'
-                id='basic-navbar-nav'
-              >
+                id='basic-navbar-nav'>
                 <Col className='w-100 px-0 px-md-2 px-lg-2'>
                   <Route
                     render={({ history }) => <SearchBox history={history} />}
@@ -190,12 +189,10 @@ const Header = () => {
                         <NavDropdown
                           className='bg-dark mb-0 pb-0 text-light'
                           title={userInfo.name}
-                          id='username'
-                        >
+                          id='username'>
                           <LinkContainer
                             className='bg-dark pt-3 mt-n3 text-light'
-                            to='/profile'
-                          >
+                            to='/profile'>
                             <NavDropdown.Item className='bg-dark text-light'>
                               <h6 className=' bg-dark text-light mt-0 pt-0'>
                                 Perfil
@@ -204,8 +201,7 @@ const Header = () => {
                           </LinkContainer>
                           <NavDropdown.Item
                             className='bg-dark pb-3 mb-n3'
-                            onClick={logoutHandler}
-                          >
+                            onClick={logoutHandler}>
                             <h6 className='text-light'>Salir</h6>
                           </NavDropdown.Item>
                         </NavDropdown>
