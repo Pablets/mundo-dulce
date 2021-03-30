@@ -10,14 +10,18 @@ import ProductCarousel from '../components/ProductCarousel'
 import Meta from '../components/Meta'
 import { listProducts } from '../actions/productActions'
 
-const HomeScreen = ({ match }) => {
+const HomeScreen = ({ match, history }) => {
   const keyword = match.params.keyword
 
   const pageNumber = match.params.pageNumber || 1
 
+  useEffect(() => {
+    history.push('/page/1')
+  }, [])
+
   const dispatch = useDispatch()
 
-  const productList = useSelector((state) => state.productList)
+  const productList = useSelector(state => state.productList)
 
   const { loading, error, products, page, pages } = productList
 
@@ -32,11 +36,11 @@ const HomeScreen = ({ match }) => {
         <ProductCarousel />
       ) : (
         <Link to='/' className='btn btn-light'>
-          Go back
+          Atras
         </Link>
       )}
       <div className='container mt-8'>
-        <h1>Ultimos productos</h1>
+        <h1 className='text-2xl py-2'>Ultimos productos</h1>
         {loading ? (
           <Loader />
         ) : error ? (
@@ -44,7 +48,7 @@ const HomeScreen = ({ match }) => {
         ) : (
           <>
             <Row>
-              {products.map((product) => (
+              {products.map(product => (
                 <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
                   <Product product={product} />
                 </Col>
