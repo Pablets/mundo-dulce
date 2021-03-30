@@ -22,11 +22,11 @@ const ShippingScreen = ({ history }) => {
         dispatch(saveShippingAddress({ address, city, postalCode, country }))
         history.push('/payment')
     }
-    
+
     return (
         <FormContainer>
             <CheckoutSteps step1 step2 />
-            <h1>Shipping</h1>
+            <h1 className='font-bold text-2xl pb-4 text-gray-600'>Shipping</h1>
             <Form onSubmit={submitHandler}>
                 <Form.Group controlId='address'>
                     <Form.Label>Address</Form.Label>
