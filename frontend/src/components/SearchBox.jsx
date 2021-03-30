@@ -19,7 +19,7 @@ const SearchBox = ({ history }) => {
     >
       <input
         className='bg-transparent px-3 text-1xl text-gray-800 focus:outline-none'
-        placeholder='Buscar...'
+        placeholder='Buscar en mundo dulce'
         aria-label='Search'
         aria-describedby='Search'
         onChange={(e) => setKeyword(e.target.value)}

@@ -7,7 +7,7 @@ const Paginate = ({ pages, page, isAdmin = false, keyword = '' }) => {
   return (
     pages > 1 && (
       <div>
-        {[...Array(pages).keys()].map((x) => (
+        {[...Array(pages).keys()].map(x => (
           <NavLink
             activeClassName='text-white bg-pink-500 no-underline'
             className='rounded-full inline-block h-11 w-11 text-center p-1 mx-1 text-white bg-gray-500 no-underline shadow-sm'
@@ -18,8 +18,7 @@ const Paginate = ({ pages, page, isAdmin = false, keyword = '' }) => {
                   ? `/search/${keyword}/page/${x + 1}`
                   : `/page/${x + 1}`
                 : `/admin/productlist/${x + 1}`
-            }
-          >
+            }>
             <span className='py-3 text-2xl font-semibold text-center'>
               {x + 1}
             </span>

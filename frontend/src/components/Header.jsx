@@ -1,12 +1,9 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { NavLink, Route } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive'
 import { useDispatch, useSelector } from 'react-redux'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Navbar, Nav, Container, NavDropdown, Row, Col } from 'react-bootstrap'
 import SearchBox from './SearchBox'
 import { logout } from '../actions/userActions'
-// import Dropdown from 'react-overlays/Dropdown';
 import useRootClose from 'react-overlays/useRootClose'
 import Dropdown from './Dropdown'
 import { motion } from 'framer-motion'
@@ -18,11 +15,17 @@ const Header = () => {
     query: '(min-device-width: 1224px)',
   })
 
-  // const [dropDown, setDropDown] = useState(false)
+  const cart = useSelector(state => state.cart)
+  const { cartItems } = cart
 
   const ref = useRef()
   const [show, setShow] = useState(false)
+  const [showItemCount, setShowItemCount] = useState(false)
   const handleRootClose = () => setShow(false)
+
+  useEffect(() => {
+    cartItems.length !== 0 ? setShowItemCount(true) : setShowItemCount(false)
+  }, [cartItems, showItemCount])
 
   useRootClose(ref, handleRootClose, {
     disabled: !show,
@@ -40,60 +43,92 @@ const Header = () => {
   return (
     <>
       {!isDesktop ? (
-        <header style={{ marginTop: '58px' }}>
+        //
+        // Mobile version --------->
+        //
+        <header style={{ marginTop: '63px' }}>
           <div
             className='d-flex fixed top-0 w-screen bg-yellow-600 overflow-visible z-50'
             expand='lg'>
             <div className='mx-0 d-flex'>
-              <div className='mx-0 d-flex justify-content-between items-center w-screen px-2 py-2 overflow-visible'>
-                <NavLink
-                  to='/'
-                  className='text-gray-100 d-flex text-decoration-none w-12 justify-self-left'
-                  activeClassName='text-white'>
-                  Mundo Dulce
-                </NavLink>
-                <div className='mr-20 pl-2'>
-                  <SearchBox />
+              <div className='mx-0 d-flex justify-content-end items-center w-screen pl-1 pr-2 py-3 overflow-visible'>
+                <div className='w-4/6 pl-2 mr-4'>
+                  <Route
+                    render={({ history }) => <SearchBox history={history} />}
+                  />
                 </div>
+                <NavLink
+                  to='/cart'
+                  onClick={() => setShow(false)}
+                  activeClassName='text-decoration-none'
+                  className='mr-2'>
+                  <i className='text-xl fas fa-shopping-cart ml-2 text-gray-600 relative'>
+                    <div className='absolute top-3 left-3 d-flex justify-content-center items-center'>
+                      {showItemCount && (
+                        <span className='w-5 max-w-6 h-auto p-0 bg-red-600 text-center rounded-full text-white text-sm font-sans font-light'>
+                          {cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                        </span>
+                      )}
+                    </div>
+                  </i>
+                </NavLink>
               </div>
               <button
-                className='absolute text-black bg-red-400 active: border-transparent focus:outline-none p-2 top-2 right-2 h-10 w-14'
+                className='absolute text-black focus:outline-none top-3 left-3 p-1 h-10 '
                 onClick={() => setShow(true)}>
-                Menu
+                <i className='fas fa-bars text-xl text-gray-600'></i>
               </button>
+              {/* Hacer esto responsivo */}
               <motion.div
-                animate={show ? { x: -360 } : { x: -649 }}
+                className='full-width absolute'
+                animate={show ? { x: 0 } : { x: -290 }}
                 transition={{ duration: 0.5 }}>
+                <motion.div
+                  animate={show ? { x: 0 } : { x: -300 }}
+                  transition={{ duration: 0.1 }}
+                  className='absolute z-10 w-screen h-screen'></motion.div>
+                <div className='bg-gray-800 text-white w-72 h-16 pl-3 d-flex items-center'>
+                  {userInfo ? (
+                    <span>Bienvenido {userInfo.name}</span>
+                  ) : (
+                    <span>Bienvenid@</span>
+                  )}
+                </div>
                 <div
                   ref={ref}
                   className='bg-yellow-600 h-screen z-50 absolute w-72 pt-4 pl-2'>
                   <div>
-                    <div className='pb-2'>
-                      <NavLink
-                        to='/cart'
-                        onClick={() => setShow(false)}
-                        activeClassName='text-decoration-none'>
-                        <i className='fas fa-shopping-cart ml-1 text-base text-gray-700' />
-                        <span className='ml-2 text-xl font-normal text-gray-700'>
-                          Carrito
-                        </span>
-                      </NavLink>
-                    </div>
+                    {userInfo && (
+                      <div className='pb-2 focus:outline-none'>
+                        <NavLink
+                          to='/'
+                          onClick={() => setShow(false)}
+                          activeClassName='text-decoration-none text-white focus:text-decoration-none'>
+                          <i className='fas fa-home ml-1 text-base text-gray-600' />
+                          <span className='ml-2 text-xl font-normal'>
+                            Inicio
+                          </span>
+                        </NavLink>
+                      </div>
+                    )}
                     <div>
                       {userInfo ? (
                         <div>
                           <Dropdown icon={'fas fa-user'} label={userInfo.name}>
                             <NavLink
                               to='/profile'
-                              onClick={() => setShow(false)}>
-                              <button className='ml-7'>
+                              onClick={() => setShow(false)}
+                              activeClassName='text-white'>
+                              <button className='ml-7 focus:outline-none'>
                                 <span className='font-sans font-normal text-base'>
                                   Perfil
                                 </span>
                               </button>
                             </NavLink>
                             <div>
-                              <button className='ml-7' onClick={logoutHandler}>
+                              <button
+                                className='ml-7 focus:outline-none'
+                                onClick={logoutHandler}>
                                 <span className='font-sans font-normal text-base'>
                                   Salir
                                 </span>
@@ -103,7 +138,11 @@ const Header = () => {
                         </div>
                       ) : (
                         <NavLink to='/login' onClick={() => setShow(false)}>
-                          <h5>Ingresar</h5>
+                          <button className='ml-7 bg-green-500 rounded-md p-2 focus:outline-none'>
+                            <span className='font-sans font-normal text-base text-white'>
+                              Ingresar
+                            </span>
+                          </button>
                         </NavLink>
                       )}
                     </div>
@@ -112,10 +151,11 @@ const Header = () => {
                         <div>
                           <NavLink
                             to='/admin/userlist'
-                            onClick={() => setShow(false)}>
-                            <button className='ml-7'>
+                            onClick={() => setShow(false)}
+                            activeClassName='text-white'>
+                            <button className='ml-7 focus:outline-none'>
                               <span className='font-sans font-normal text-base'>
-                                Users
+                                Usuarios
                               </span>
                             </button>
                           </NavLink>
@@ -123,8 +163,9 @@ const Header = () => {
                         <div>
                           <NavLink
                             to='/admin/productlist'
-                            onClick={() => setShow(false)}>
-                            <button className='ml-7'>
+                            onClick={() => setShow(false)}
+                            activeClassName='text-white'>
+                            <button className='ml-7 focus:outline-none'>
                               <span className='font-sans font-normal text-base'>
                                 Productos
                               </span>
@@ -134,8 +175,9 @@ const Header = () => {
                         <div>
                           <NavLink
                             to='/admin/orderlist'
-                            onClick={() => setShow(false)}>
-                            <button className='ml-7'>
+                            onClick={() => setShow(false)}
+                            activeClassName='text-white'>
+                            <button className='ml-7 focus:outline-none'>
                               <span className='font-sans font-normal text-base'>
                                 Ordenes
                               </span>
@@ -151,86 +193,120 @@ const Header = () => {
           </div>
         </header>
       ) : (
-        <header>
-          <Navbar
-            className='d-flex align-items-center py-3 acenter'
-            bg='dark'
-            variant='dark'
-            expand='lg'
-            collapseOnSelect>
-            <Container>
-              <LinkContainer to='/'>
-                <Navbar.Brand href='/'>Mundo Dulce</Navbar.Brand>
-              </LinkContainer>
-              <Navbar.Toggle aria-controls='basic-navbar-nav' />
-              <Navbar.Collapse
-                className='xs-px-0 xs-mx-0'
-                id='basic-navbar-nav'>
-                <Col className='w-100 px-0 px-md-2 px-lg-2'>
-                  <Route
-                    render={({ history }) => <SearchBox history={history} />}
-                  />
-                </Col>
-                <Nav className='ml-auto'>
-                  <LinkContainer to='/cart'>
-                    <Nav.Link className='d-flex align-items-center'>
-                      <h5 className='text-light mr-md-2'>
-                        <i className='fas fa-shopping-cart pr-3 ' />
-                        Carrito
-                      </h5>
-                    </Nav.Link>
-                  </LinkContainer>
-                  <Row>
-                    <h5 className=' inline bg-dark text-light'>
-                      <i className='fas fa-user ml-3 py-2 pl-1 pr-3 pr-md-1 ml-lg-4 mr-md-1 mt-md-1 pt-md-2 '></i>
-                    </h5>
-                    {userInfo ? (
-                      <h5 className='bg-dark text-light'>
-                        <NavDropdown
-                          className='bg-dark mb-0 pb-0 text-light'
-                          title={userInfo.name}
-                          id='username'>
-                          <LinkContainer
-                            className='bg-dark pt-3 mt-n3 text-light'
-                            to='/profile'>
-                            <NavDropdown.Item className='bg-dark text-light'>
-                              <h6 className=' bg-dark text-light mt-0 pt-0'>
-                                Perfil
-                              </h6>
-                            </NavDropdown.Item>
-                          </LinkContainer>
-                          <NavDropdown.Item
-                            className='bg-dark pb-3 mb-n3'
-                            onClick={logoutHandler}>
-                            <h6 className='text-light'>Salir</h6>
-                          </NavDropdown.Item>
-                        </NavDropdown>
-                      </h5>
-                    ) : (
-                      <LinkContainer className='text-light' to='/login'>
-                        <Nav.Link>
-                          <h5 className='text-light'>Ingresar</h5>
-                        </Nav.Link>
-                      </LinkContainer>
-                    )}
-                  </Row>
-                  {userInfo && userInfo.isAdmin && (
-                    <NavDropdown title='Admin' id='adminmenu'>
-                      <LinkContainer to='/admin/userlist'>
-                        <NavDropdown.Item>Usuarios</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to='/admin/productlist'>
-                        <NavDropdown.Item>Productos</NavDropdown.Item>
-                      </LinkContainer>
-                      <LinkContainer to='/admin/orderlist'>
-                        <NavDropdown.Item>Ordenes</NavDropdown.Item>
-                      </LinkContainer>
-                    </NavDropdown>
-                  )}
-                </Nav>
-              </Navbar.Collapse>
-            </Container>
-          </Navbar>
+        //
+        // desktop version --------->
+        //
+        <header style={{ marginTop: '63px' }}>
+          <div className='d-flex items-center fixed justify-evenly top-0 w-screen h-16 bg-yellow-600 z-50'>
+            <div className='focus:outline-none'>
+              <NavLink
+                to='/page/1'
+                activeClassName='text-decoration-none text-white focus:text-decoration-none'>
+                {/* <i className='fas fa-home ml-1 text-base text-gray-600' /> */}
+                <span className='ml-2 text-xl font-normal hover: text-gray-600 hover: text-decoration-none '>
+                  Mundo Dulce
+                </span>
+              </NavLink>
+            </div>
+            <div className='w-2/6'>
+              <Route
+                render={({ history }) => <SearchBox history={history} />}
+              />
+            </div>
+            <div className='d-flex items-center'>
+              <div className='px-2'>
+                <NavLink
+                  to='/cart'
+                  activeClassName='text-decoration-none'
+                  className=''>
+                  <i className='text-lg fas fa-shopping-cart pb-1 text-gray-600 relative'>
+                    <div className='absolute top-3 left-3 d-flex justify-content-center items-center'>
+                      {showItemCount && (
+                        <span className='w-5 max-w-6 h-auto p-0 bg-red-600 text-center rounded-full text-white text-sm font-sans font-light'>
+                          {cartItems.reduce((acc, item) => acc + item.qty, 0)}
+                        </span>
+                      )}
+                    </div>
+                  </i>
+                </NavLink>
+              </div>
+              {/* Hacer esto responsivo */}
+              <div className='d-flex px-2'>
+                {userInfo ? (
+                  <div>
+                    <Dropdown icon={'fas fa-user'} label={userInfo.name}>
+                      <NavLink to='/profile' activeClassName='text-white'>
+                        <button className='ml-7 focus:outline-none'>
+                          <span className='font-sans font-normal text-base'>
+                            Perfil
+                          </span>
+                        </button>
+                      </NavLink>
+                      <div>
+                        <button
+                          className='ml-7 focus:outline-none'
+                          onClick={logoutHandler}>
+                          <span className='font-sans font-normal text-base'>
+                            Salir
+                          </span>
+                        </button>
+                      </div>
+                    </Dropdown>
+                  </div>
+                ) : (
+                  <NavLink to='/login' onClick={() => setShow(false)}>
+                    <button className='ml-7 bg-green-500 rounded-md p-2 focus:outline-none'>
+                      <span className='font-sans font-normal text-base text-white'>
+                        Ingresar
+                      </span>
+                    </button>
+                  </NavLink>
+                )}
+              </div>
+              {userInfo && userInfo.isAdmin && (
+                <div className='px-2'>
+                  <Dropdown icon={'fas fa-lock'} label={'Admin'}>
+                    <div>
+                      <NavLink
+                        to='/admin/userlist'
+                        onClick={() => setShow(false)}
+                        activeClassName='text-white'>
+                        <button className='ml-7 focus:outline-none'>
+                          <span className='font-sans font-normal text-base'>
+                            Usuarios
+                          </span>
+                        </button>
+                      </NavLink>
+                    </div>
+                    <div>
+                      <NavLink
+                        to='/admin/productlist'
+                        onClick={() => setShow(false)}
+                        activeClassName='text-white'>
+                        <button className='ml-7 focus:outline-none'>
+                          <span className='font-sans font-normal text-base'>
+                            Productos
+                          </span>
+                        </button>
+                      </NavLink>
+                    </div>
+                    <div>
+                      <NavLink
+                        to='/admin/orderlist'
+                        onClick={() => setShow(false)}
+                        activeClassName='text-white'>
+                        <button className='ml-7 focus:outline-none'>
+                          <span className='font-sans font-normal text-base'>
+                            Ordenes
+                          </span>
+                        </button>
+                      </NavLink>
+                    </div>
+                  </Dropdown>
+                </div>
+              )}
+            </div>
+          </div>
         </header>
       )}
     </>
