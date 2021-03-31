@@ -16,11 +16,18 @@ const Dropdown = ({ icon, label, children }) => {
             className='text-decoration-none focus:outline-none pb-2'
             onClick={() => setShow(!show)}>
             <i className={`${icon} ml-2 text-base`}>
-              <span className='ml-2 font-sans font-normal text-xl'>{label}</span>
+              <span className='ml-2 font-sans font-normal text-xl'>
+                {label}
+              </span>
             </i>
           </button>
           {show && (
-            <div className='absolute bg-yellow-600 p-3 ml-0 pl-0 w-40' onClick={() => setShow(false)}>{children}</div>
+            <div
+              className='absolute top-9 bg-yellow-600 p-3 ml-0 pl-0 w-40'
+              onClick={() => setShow(false)}
+              onMouseLeave={() => setShow(!show)}>
+              {children}
+            </div>
           )}
         </div>
       ) : (

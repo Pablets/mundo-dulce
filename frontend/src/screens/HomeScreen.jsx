@@ -16,8 +16,10 @@ const HomeScreen = ({ match, history }) => {
   const pageNumber = match.params.pageNumber || 1
 
   useEffect(() => {
-    history.push('/page/1')
-  }, [])
+    if (history.location.pathname === '/') {
+      history.push('/page/1')
+    }
+  })
 
   const dispatch = useDispatch()
 
